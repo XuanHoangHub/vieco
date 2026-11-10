@@ -1,9 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HelpCircle, ChevronDown } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sound } from '../utils/audio';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      if (listRef.current) {
+        gsap.from(listRef.current.children, {
+          scrollTrigger: {
+            trigger: listRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+          opacity: 0,
+          y: 25,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const faqs = [
     {
@@ -34,25 +64,25 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-20 md:py-28 relative scroll-mt-20">
+    <section ref={sectionRef} id="faq" className="py-20 md:py-28 relative scroll-mt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4">
-            <HelpCircle className="w-3.5 h-3.5" />
-            Giải Đáp Thắc Mắc & Hỗ Trợ
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4 whitespace-nowrap">
+            <HelpCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>Giải Đáp Thắc Mắc & Hỗ Trợ</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5">
-            Câu Hỏi Thường Gặp Về <span className="shimmer-text">EcoShield Wallet</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+            Câu Hỏi Thường Gặp Về <span className="shimmer-text whitespace-nowrap">EcoShield Wallet</span>
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
             Mọi thắc mắc về vật liệu bio-composite, cơ chế chắn sóng RFID và tính năng định vị Apple Find My được giải đáp minh bạch dưới đây.
           </p>
         </div>
 
         {/* Accordion List */}
-        <div className="space-y-4">
+        <div ref={listRef} className="space-y-4">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
@@ -74,19 +104,19 @@ export const FaqSection: React.FC = () => {
                     <span className="w-6 h-6 rounded-full bg-[#c88242]/20 border border-[#c88242]/40 text-[#df9854] text-xs flex items-center justify-center shrink-0 font-tech">
                       0{index + 1}
                     </span>
-                    <span>{faq.q}</span>
+                    <span className="text-pretty">{faq.q}</span>
                   </span>
                   <div
                     className={`w-8 h-8 rounded-full bg-[#140f0d] border border-zinc-800 flex items-center justify-center text-[#c88242] shrink-0 transition-transform duration-300 ${
                       isOpen ? 'rotate-180 bg-[#c88242]/20 border-[#c88242]' : ''
                     }`}
                   >
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4 shrink-0" />
                   </div>
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-6 sm:px-6 sm:pb-7 pt-1 text-xs sm:text-sm text-[#eddccb] leading-relaxed border-t border-zinc-800/80 animate-fade-in">
+                  <div className="px-5 pb-6 sm:px-6 sm:pb-7 pt-1 text-xs sm:text-sm text-[#eddccb] leading-relaxed border-t border-zinc-800/80 animate-fade-in text-pretty">
                     <p>{faq.a}</p>
                   </div>
                 )}
@@ -97,9 +127,9 @@ export const FaqSection: React.FC = () => {
 
         {/* Support Callout */}
         <div className="mt-12 text-center p-6 rounded-2xl glass-coffee border border-[#c88242]/20">
-          <p className="text-xs sm:text-sm text-[#b5a89e]">
+          <p className="text-xs sm:text-sm text-[#b5a89e] text-pretty">
             Bạn vẫn còn câu hỏi khác? Đội ngũ tư vấn EcoShield sẵn sàng hỗ trợ trực tiếp qua Zalo / Hotline:{' '}
-            <strong className="text-[#df9854] font-tech">098.888.xxxx</strong> (8:00 - 21:00 hàng ngày).
+            <strong className="text-[#df9854] font-tech whitespace-nowrap">098.888.xxxx</strong> (8:00 - 21:00 hàng ngày).
           </p>
         </div>
 

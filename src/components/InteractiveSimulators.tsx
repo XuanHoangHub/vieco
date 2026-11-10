@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShieldCheck, ShieldAlert, Radio, Volume2, Compass, CheckCircle2, Smartphone, CreditCard, Lock, Sparkles } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sound } from '../utils/audio';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export const InteractiveSimulators: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
   // RFID Simulator State
   const [walletState, setWalletState] = useState<'closed' | 'open'>('closed');
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'blocked' | 'success'>('idle');
@@ -11,6 +18,30 @@ export const InteractiveSimulators: React.FC = () => {
   // Find My Radar State
   const [isRinging, setIsRinging] = useState(false);
   const [distance, setDistance] = useState(1.4);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      if (gridRef.current) {
+        gsap.from(gridRef.current.children, {
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+          opacity: 0,
+          y: 35,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'power2.out',
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleTestRfidScan = () => {
     sound.playClick();
@@ -40,24 +71,24 @@ export const InteractiveSimulators: React.FC = () => {
   };
 
   return (
-    <section className="py-20 md:py-28 relative">
+    <section ref={sectionRef} className="py-20 md:py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            Trải Nghiệm Trực Quan Độc Quyền
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4 whitespace-nowrap">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span>Trải Nghiệm Trực Quan Độc Quyền</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5">
-            Mô Phỏng Trực Tiếp <span className="shimmer-text">Công Nghệ Bảo Mật</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+            Mô Phỏng Trực Tiếp <span className="shimmer-text whitespace-nowrap">Công Nghệ Bảo Mật</span>
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
             Tận mắt kiểm chứng cơ chế chắn sóng RFID 13.56 MHz ngăn chặn móc túi điện tử và hệ thống định vị Apple Find My phản hồi tức thì.
           </p>
         </div>
 
         {/* Dual Interactive Simulators Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
           
           {/* SIMULATOR 1: RFID HACKER VS SHIELD TESTER */}
           <div className="glass-coffee rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border border-[#c88242]/20 shadow-2xl">
@@ -65,44 +96,44 @@ export const InteractiveSimulators: React.FC = () => {
             <div>
               <div className="flex items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-[#c88242]/15 border border-[#c88242]/30 flex items-center justify-center text-[#c88242]">
+                  <div className="w-10 h-10 rounded-2xl bg-[#c88242]/15 border border-[#c88242]/30 flex items-center justify-center text-[#c88242] shrink-0">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-[#f5efeb]">Kiểm Nghiệm Quẹt Trộm RFID</h3>
-                    <p className="text-xs text-[#b5a89e]">Tần số sóng vô tuyến bảo mật 13.56 MHz</p>
+                    <h3 className="text-lg font-bold text-[#f5efeb] whitespace-nowrap">Kiểm Nghiệm Quẹt Trộm RFID</h3>
+                    <p className="text-xs text-[#b5a89e] whitespace-nowrap">Tần số sóng vô tuyến bảo mật 13.56 MHz</p>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-[11px] font-tech text-[#c88242] uppercase tracking-wider block">Ngăn chặn</span>
-                  <span className="text-sm font-bold text-emerald-400 font-tech">{blockedAttempts} lần an toàn</span>
+                <div className="text-right shrink-0">
+                  <span className="text-[11px] font-tech text-[#c88242] uppercase tracking-wider block whitespace-nowrap">Ngăn chặn</span>
+                  <span className="text-sm font-bold text-emerald-400 font-tech whitespace-nowrap">{blockedAttempts} lần an toàn</span>
                 </div>
               </div>
 
               {/* Interactive Wallet State Toggle */}
-              <div className="bg-[#140f0d] p-1.5 rounded-2xl border border-[#c88242]/20 flex items-center mb-6">
+              <div className="bg-[#140f0d] p-1.5 rounded-2xl border border-[#c88242]/20 flex flex-col sm:flex-row items-center gap-1.5 mb-6">
                 <button
                   onClick={() => { sound.playClick(); setWalletState('closed'); setScanStatus('idle'); }}
-                  className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full sm:flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
                     walletState === 'closed'
                       ? 'bg-[#c88242] text-white shadow-md'
                       : 'text-[#b5a89e] hover:text-[#f5efeb]'
                   }`}
                 >
-                  <Lock className="w-4 h-4" />
-                  <span>Ví Đang Đóng (Lớp Khiên Kích Hoạt)</span>
+                  <Lock className="w-4 h-4 shrink-0" />
+                  <span>Ví Đang Đóng (Khiên Bật)</span>
                 </button>
                 <button
                   onClick={() => { sound.playClick(); setWalletState('open'); setScanStatus('idle'); }}
-                  className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full sm:flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
                     walletState === 'open'
                       ? 'bg-emerald-600 text-white shadow-md'
                       : 'text-[#b5a89e] hover:text-[#f5efeb]'
                   }`}
                 >
-                  <CreditCard className="w-4 h-4" />
-                  <span>Rút Thẻ Ra (Chủ Động Thanh Toán)</span>
+                  <CreditCard className="w-4 h-4 shrink-0" />
+                  <span>Rút Thẻ Ra (Thanh Toán)</span>
                 </button>
               </div>
 
@@ -114,7 +145,7 @@ export const InteractiveSimulators: React.FC = () => {
                 {/* Left: Simulated POS Reader / Skimmer */}
                 <div className="relative z-10 flex flex-col items-center">
                   <div className="w-16 h-24 rounded-xl bg-zinc-900 border-2 border-zinc-700 p-2 flex flex-col justify-between shadow-xl">
-                    <div className="w-full h-5 rounded bg-zinc-800 flex items-center justify-center text-[8px] font-tech text-amber-400">
+                    <div className="w-full h-5 rounded bg-zinc-800 flex items-center justify-center text-[8px] font-tech text-amber-400 whitespace-nowrap">
                       POS 13.56M
                     </div>
                     <div className="w-full flex justify-center">
@@ -122,20 +153,20 @@ export const InteractiveSimulators: React.FC = () => {
                     </div>
                     <div className="w-full h-1.5 rounded-full bg-zinc-800" />
                   </div>
-                  <span className="text-[10px] text-zinc-400 mt-2 font-tech">Thiết Bị Quét Lén</span>
+                  <span className="text-[10px] text-zinc-400 mt-2 font-tech whitespace-nowrap">Thiết Bị Quét Lén</span>
                 </div>
 
                 {/* Center: Shield Wave Interaction */}
                 <div className="relative z-10 flex-1 flex items-center justify-center px-4">
                   {scanStatus === 'idle' && (
                     <div className="text-center">
-                      <div className="text-xs text-zinc-500 font-tech">Nhấn "Thử Quét Sóng POS"</div>
-                      <div className="text-[10px] text-zinc-600">Khoảng cách quét: 5 cm</div>
+                      <div className="text-xs text-zinc-400 font-tech whitespace-nowrap">Bấm "Thử Quét Sóng POS"</div>
+                      <div className="text-[10px] text-zinc-500 whitespace-nowrap">Khoảng cách: 5 cm</div>
                     </div>
                   )}
 
                   {scanStatus === 'scanning' && (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-amber-400 animate-bounce" />
                       <div className="w-3 h-3 rounded-full bg-amber-400 animate-bounce [animation-delay:0.15s]" />
                       <div className="w-3 h-3 rounded-full bg-amber-400 animate-bounce [animation-delay:0.3s]" />
@@ -147,7 +178,7 @@ export const InteractiveSimulators: React.FC = () => {
                       <div className="w-12 h-12 rounded-full bg-red-500/20 border-2 border-red-500 flex items-center justify-center mx-auto mb-1 shield-pulse">
                         <ShieldAlert className="w-6 h-6 text-red-400" />
                       </div>
-                      <span className="text-[11px] font-bold text-red-400 uppercase font-tech">
+                      <span className="text-[11px] font-bold text-red-400 uppercase font-tech whitespace-nowrap">
                         Sóng Bị Triệt Tiêu 100%
                       </span>
                     </div>
@@ -158,7 +189,7 @@ export const InteractiveSimulators: React.FC = () => {
                       <div className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto mb-1">
                         <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                       </div>
-                      <span className="text-[11px] font-bold text-emerald-400 uppercase font-tech">
+                      <span className="text-[11px] font-bold text-emerald-400 uppercase font-tech whitespace-nowrap">
                         Thanh Toán Thành Công
                       </span>
                     </div>
@@ -175,7 +206,7 @@ export const InteractiveSimulators: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[8px] font-bold text-[#c88242] font-tech">ECOSHIELD</span>
+                      <span className="text-[8px] font-bold text-[#c88242] font-tech whitespace-nowrap">ECOSHIELD</span>
                       {walletState === 'closed' ? (
                         <Lock className="w-3 h-3 text-[#c88242]" />
                       ) : (
@@ -183,16 +214,16 @@ export const InteractiveSimulators: React.FC = () => {
                       )}
                     </div>
                     <div className="text-center py-2">
-                      <div className="text-[10px] font-bold text-[#f5efeb]">
+                      <div className="text-[10px] font-bold text-[#f5efeb] whitespace-nowrap">
                         {walletState === 'closed' ? 'Ví Đang Đóng' : 'Thẻ Rút Ra'}
                       </div>
-                      <div className="text-[8px] text-[#b5a89e]">
-                        {walletState === 'closed' ? 'Lớp màng Niken/Đồng' : 'Sẵn sàng quẹt'}
+                      <div className="text-[8px] text-[#b5a89e] whitespace-nowrap">
+                        {walletState === 'closed' ? 'Màng Niken/Đồng' : 'Sẵn sàng quẹt'}
                       </div>
                     </div>
                     <div className="w-full h-1 rounded-full bg-[#c88242]/40" />
                   </div>
-                  <span className="text-[10px] text-zinc-400 mt-2 font-tech">EcoShield Bio-Wallet</span>
+                  <span className="text-[10px] text-zinc-400 mt-2 font-tech whitespace-nowrap">EcoShield Bio-Wallet</span>
                 </div>
               </div>
 
@@ -202,14 +233,14 @@ export const InteractiveSimulators: React.FC = () => {
                   <p className="text-xs text-[#eddccb] leading-relaxed flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Khiên chắn hoạt động:</strong> Lớp vải dẫn điện chuyên dụng (0.08 - 0.12 mm) làm suy hao trường điện từ 13.56 MHz, khiến mọi thiết bị POS/NFC bên ngoài hoàn toàn không thể đánh cắp tiền hay thông tin thẻ.
+                      <strong>Khiên chắn hoạt động:</strong> Lớp vải dẫn điện chuyên dụng (0.08 - 0.12 mm) làm suy hao trường điện từ 13.56 MHz, khiến mọi thiết bị POS/NFC bên ngoài hoàn toàn không thể đọc trộm thẻ.
                     </span>
                   </p>
                 ) : (
                   <p className="text-xs text-[#eddccb] leading-relaxed flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Tiện lợi tuyệt đối:</strong> Khi bạn chủ động rút thẻ ra khỏi ví, thẻ thanh toán chạm không tiếp xúc (Contactless) hoạt động trơn tru trong tích tắc mà không cần thao tác phức tạp.
+                      <strong>Tiện lợi tuyệt đối:</strong> Khi bạn chủ động rút thẻ ra khỏi ví, tính năng chạm không tiếp xúc (Contactless) hoạt động ngay trong tích tắc mà không gặp bất kỳ cản trở nào.
                     </span>
                   </p>
                 )}
@@ -221,10 +252,10 @@ export const InteractiveSimulators: React.FC = () => {
               <button
                 onClick={handleTestRfidScan}
                 disabled={scanStatus === 'scanning'}
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-sm tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-sm tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 active:scale-98 cursor-pointer whitespace-nowrap"
               >
-                <Radio className={`w-4 h-4 ${scanStatus === 'scanning' ? 'animate-spin' : ''}`} />
-                <span>{scanStatus === 'scanning' ? 'Đang Phát Sóng Thử Nghiệm...' : 'KÍCH HOẠT MÔ PHỎNG QUÉT THỬ'}</span>
+                <Radio className={`w-4 h-4 shrink-0 ${scanStatus === 'scanning' ? 'animate-spin' : ''}`} />
+                <span className="whitespace-nowrap">{scanStatus === 'scanning' ? 'Đang Phát Sóng Thử Nghiệm...' : 'KÍCH HOẠT MÔ PHỎNG QUÉT THỬ'}</span>
               </button>
             </div>
           </div>
@@ -234,18 +265,18 @@ export const InteractiveSimulators: React.FC = () => {
             <div>
               <div className="flex items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                     <Smartphone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-[#f5efeb]">Mạng Lưới Apple Find My™</h3>
-                    <p className="text-xs text-[#b5a89e]">Kiến trúc Khoang Kép (Dual-Zone) không nghẽn sóng</p>
+                    <h3 className="text-lg font-bold text-[#f5efeb] whitespace-nowrap">Mạng Lưới Apple Find My™</h3>
+                    <p className="text-xs text-[#b5a89e] whitespace-nowrap">Kiến trúc Khoang Kép (Dual-Zone) không nghẽn sóng</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-[#140f0d] px-3 py-1.5 rounded-full border border-zinc-800">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="text-[11px] font-tech text-emerald-400">BLE 2.4 GHz</span>
+                <div className="flex items-center gap-2 bg-[#140f0d] px-3 py-1.5 rounded-full border border-zinc-800 shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                  <span className="text-[11px] font-tech text-emerald-400 whitespace-nowrap">BLE 2.4 GHz</span>
                 </div>
               </div>
 
@@ -275,8 +306,8 @@ export const InteractiveSimulators: React.FC = () => {
                   </div>
 
                   <div className="mt-3 text-center bg-[#090b0d]/90 px-3.5 py-1.5 rounded-full border border-emerald-500/30 shadow-md">
-                    <span className="text-xs font-bold text-white block">EcoShield Smart Wallet</span>
-                    <span className="text-[10px] text-emerald-400 font-tech">
+                    <span className="text-xs font-bold text-white block whitespace-nowrap">EcoShield Smart Wallet</span>
+                    <span className="text-[10px] text-emerald-400 font-tech whitespace-nowrap">
                       Khoảng cách: {distance}m • Đang ở gần bạn
                     </span>
                   </div>
@@ -284,8 +315,8 @@ export const InteractiveSimulators: React.FC = () => {
 
                 {/* Audio wave effect indicator when ringing */}
                 {isRinging && (
-                  <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-emerald-500 text-black px-2.5 py-1 rounded-full text-[10px] font-bold animate-bounce">
-                    <Volume2 className="w-3.5 h-3.5" />
+                  <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-emerald-500 text-black px-2.5 py-1 rounded-full text-[10px] font-bold animate-bounce whitespace-nowrap">
+                    <Volume2 className="w-3.5 h-3.5 shrink-0" />
                     <span>Đang phát chuông...</span>
                   </div>
                 )}
@@ -294,11 +325,11 @@ export const InteractiveSimulators: React.FC = () => {
               {/* Dual-Zone Explanation Card */}
               <div className="mt-4 p-3.5 rounded-xl bg-[#140f0d] border border-[#c88242]/20">
                 <p className="text-xs text-[#eddccb] leading-relaxed">
-                  <strong>Đột phá Dual-Zone Architecture:</strong> Lớp RFID nếu bọc kín ví sẽ chặn sóng Bluetooth khiến bạn không thể tìm ví. EcoShield giải quyết bài toán này bằng cách <em>tách biệt hoàn toàn</em> ngăn thẻ có lót chắn sóng và khoang định vị Smart Tag độc lập.
+                  <strong>Đột phá Dual-Zone:</strong> Lớp RFID nếu bọc kín ví sẽ chặn sóng Bluetooth. EcoShield giải quyết bài toán này bằng cách <em>tách biệt hoàn toàn</em> ngăn thẻ có lót chắn sóng và khoang định vị Smart Tag độc lập.
                 </p>
                 <div className="mt-2.5 flex items-center justify-between text-[11px] font-tech text-[#b5a89e] pt-2 border-t border-zinc-800">
-                  <span>Pin: ~365 ngày (thay được)</span>
-                  <span className="text-emerald-400">iOS Find My App</span>
+                  <span className="whitespace-nowrap">Pin: ~365 ngày (thay được)</span>
+                  <span className="text-emerald-400 whitespace-nowrap font-semibold">iOS Find My App</span>
                 </div>
               </div>
             </div>
@@ -307,9 +338,9 @@ export const InteractiveSimulators: React.FC = () => {
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleTriggerFindMySound}
-                className="flex-1 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-emerald-500/40 text-emerald-400 font-bold text-xs sm:text-sm tracking-wide transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-emerald-500/40 text-emerald-400 font-bold text-xs sm:text-sm tracking-wide transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer whitespace-nowrap"
               >
-                <Volume2 className="w-4 h-4" />
+                <Volume2 className="w-4 h-4 shrink-0" />
                 <span>Phát Âm Thanh Tìm Ví</span>
               </button>
 
@@ -318,9 +349,9 @@ export const InteractiveSimulators: React.FC = () => {
                   sound.playClick();
                   setDistance((prev) => (prev > 0.8 ? +(prev - 0.3).toFixed(1) : 1.8));
                 }}
-                className="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 active:scale-98 cursor-pointer whitespace-nowrap"
               >
-                <Compass className="w-4 h-4" />
+                <Compass className="w-4 h-4 shrink-0" />
                 <span>Mô Phỏng Lại Gần Ví</span>
               </button>
             </div>

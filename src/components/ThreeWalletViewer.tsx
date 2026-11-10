@@ -42,16 +42,24 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    // Clear any previous canvas
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+
     // Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    const initialWidth = container.clientWidth || 800;
+    const initialHeight = container.clientHeight || 560;
 
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 1.8, 5.2);
+    // Set camera FOV and position to look directly at center (0, 0, 0)
+    const camera = new THREE.PerspectiveCamera(40, initialWidth / initialHeight, 0.1, 100);
+    // Camera is positioned directly in front with a tiny elevation, looking straight at (0, 0, 0)
+    camera.position.set(0, 0.05, 4.3);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
+    renderer.setSize(initialWidth, initialHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -59,28 +67,28 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
 
-    // Group holding all wallet parts
+    // Group holding all wallet parts - CENTERED AT (0, 0, 0)
     const rootGroup = new THREE.Group();
+    rootGroup.position.set(0, 0, 0);
     scene.add(rootGroup);
 
-    // Lighting setup for warm, tactile coffee leather appearance
-    const ambientLight = new THREE.AmbientLight(0xfff5ea, 1.2);
+    // Lighting setup
+    const ambientLight = new THREE.AmbientLight(0xfff5ea, 1.4);
     scene.add(ambientLight);
 
-    const mainKeyLight = new THREE.DirectionalLight(0xffe2c0, 2.8);
-    mainKeyLight.position.set(4, 6, 5);
+    const mainKeyLight = new THREE.DirectionalLight(0xffe2c0, 2.5);
+    mainKeyLight.position.set(4, 5, 5);
     mainKeyLight.castShadow = true;
     mainKeyLight.shadow.mapSize.width = 1024;
     mainKeyLight.shadow.mapSize.height = 1024;
-    mainKeyLight.shadow.bias = -0.0001;
     scene.add(mainKeyLight);
 
-    const rimLight = new THREE.DirectionalLight(0xc88242, 2.0);
+    const rimLight = new THREE.DirectionalLight(0xc88242, 2.2);
     rimLight.position.set(-5, 2, -3);
     scene.add(rimLight);
 
     const fillLight = new THREE.DirectionalLight(0xa5c4ab, 0.8);
-    fillLight.position.set(0, -4, 3);
+    fillLight.position.set(0, -3, 3);
     scene.add(fillLight);
 
     // Procedural Coffee Texture Canvas for bump & roughness
@@ -129,7 +137,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
 
     const coffeeTexture = createCoffeeTexture();
 
-    // Procedural metallic weave texture for RFID shielding layer (Ni + Cu)
+    // Procedural metallic weave texture for RFID shielding layer
     const createRfidMeshTexture = () => {
       const c = document.createElement('canvas');
       c.width = 128;
@@ -178,7 +186,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
 
     // Layer 1: Outer Shell (Coffee Bio-Composite 1.0 - 1.3 mm)
     const outerGroup = new THREE.Group();
-    const outerGeo = new THREE.BoxGeometry(3.2, 2.2, 0.08);
+    const outerGeo = new THREE.BoxGeometry(3.0, 2.0, 0.08);
     const outerMat = new THREE.MeshStandardMaterial({
       color: getLeatherColor(color),
       roughness: 0.65,
@@ -192,7 +200,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     outerGroup.add(outerMesh);
 
     // Decorative Stitches along edges
-    const stitchGeo = new THREE.BoxGeometry(3.08, 2.08, 0.082);
+    const stitchGeo = new THREE.BoxGeometry(2.88, 1.88, 0.082);
     const stitchMat = new THREE.MeshBasicMaterial({
       color: 0xc88242,
       wireframe: true,
@@ -201,7 +209,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     outerGroup.add(stitchMesh);
 
     // EcoShield Embossed Logo Badge on Outer Face
-    const logoBadgeGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.02, 32);
+    const logoBadgeGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.02, 32);
     const logoBadgeMat = new THREE.MeshStandardMaterial({
       color: 0x935d31,
       metalness: 0.8,
@@ -209,12 +217,12 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     });
     const logoBadge = new THREE.Mesh(logoBadgeGeo, logoBadgeMat);
     logoBadge.rotation.x = Math.PI / 2;
-    logoBadge.position.set(0.9, -0.5, 0.05);
+    logoBadge.position.set(0.85, -0.45, 0.05);
     outerGroup.add(logoBadge);
 
-    // Layer 2: RFID Shielding Mesh (Nickel + Copper electroconductive cloth 0.08-0.12 mm)
+    // Layer 2: RFID Shielding Mesh (Nickel + Copper electroconductive cloth)
     const rfidGroup = new THREE.Group();
-    const rfidGeo = new THREE.BoxGeometry(3.05, 2.05, 0.03);
+    const rfidGeo = new THREE.BoxGeometry(2.9, 1.9, 0.03);
     const rfidMat = new THREE.MeshStandardMaterial({
       color: 0xd6b074,
       metalness: 0.92,
@@ -230,7 +238,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
 
     // Layer 3: Inner Lining & Dual-Zone Architecture (Card slots + Apple Find My Tag)
     const innerGroup = new THREE.Group();
-    const innerBaseGeo = new THREE.BoxGeometry(3.2, 2.2, 0.09);
+    const innerBaseGeo = new THREE.BoxGeometry(3.0, 2.0, 0.09);
     const innerBaseMat = new THREE.MeshStandardMaterial({
       color: 0x1f1612,
       roughness: 0.7,
@@ -243,19 +251,19 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     innerGroup.add(innerBaseMesh);
 
     // Credit Card mockup inserted in wallet
-    const cardGeo = new THREE.BoxGeometry(1.4, 0.9, 0.02);
+    const cardGeo = new THREE.BoxGeometry(1.35, 0.85, 0.02);
     const cardMat = new THREE.MeshStandardMaterial({
       color: 0x15222e,
       metalness: 0.7,
       roughness: 0.3,
     });
     const cardMesh = new THREE.Mesh(cardGeo, cardMat);
-    cardMesh.position.set(-0.7, 0.35, 0.06);
-    cardMesh.rotation.z = -0.05;
+    cardMesh.position.set(-0.65, 0.3, 0.06);
+    cardMesh.rotation.z = -0.04;
     innerGroup.add(cardMesh);
 
-    // Apple Find My Compatible Smart Tag Disc (Stainless steel & white ceramic)
-    const tagGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.07, 36);
+    // Apple Find My Compatible Smart Tag Disc
+    const tagGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.07, 36);
     const tagMat = new THREE.MeshStandardMaterial({
       color: 0xf5f5f7,
       metalness: 0.85,
@@ -263,24 +271,24 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     });
     const tagMesh = new THREE.Mesh(tagGeo, tagMat);
     tagMesh.rotation.x = Math.PI / 2;
-    tagMesh.position.set(0.75, 0, 0.07);
+    tagMesh.position.set(0.7, 0, 0.07);
 
     // Inner icon ring on tag
-    const tagRingGeo = new THREE.RingGeometry(0.12, 0.24, 32);
-    const tagRingMat = new THREE.MeshBasicMaterial({ color: 0x555555, side: THREE.DoubleSide });
+    const tagRingGeo = new THREE.RingGeometry(0.12, 0.22, 32);
+    const tagRingMat = new THREE.MeshBasicMaterial({ color: 0x444444, side: THREE.DoubleSide });
     const tagRing = new THREE.Mesh(tagRingGeo, tagRingMat);
-    tagRing.position.set(0.75, 0, 0.11);
+    tagRing.position.set(0.7, 0, 0.11);
 
     innerGroup.add(tagMesh);
     innerGroup.add(tagRing);
 
-    // RFID Electromagnetic Shield Waves (visible when scanning is active)
+    // RFID Electromagnetic Shield Wave Particles
     const waveParticlesCount = 60;
     const waveGeo = new THREE.BufferGeometry();
     const wavePositions = new Float32Array(waveParticlesCount * 3);
     for (let i = 0; i < waveParticlesCount; i++) {
-      wavePositions[i * 3] = (Math.random() - 0.5) * 3.4;
-      wavePositions[i * 3 + 1] = (Math.random() - 0.5) * 2.4;
+      wavePositions[i * 3] = (Math.random() - 0.5) * 3.2;
+      wavePositions[i * 3 + 1] = (Math.random() - 0.5) * 2.2;
       wavePositions[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
     }
     waveGeo.setAttribute('position', new THREE.BufferAttribute(wavePositions, 3));
@@ -300,16 +308,16 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     rootGroup.add(rfidGroup);
     rootGroup.add(outerGroup);
 
-    // Initial position of whole wallet
-    rootGroup.rotation.x = 0.25;
-    rootGroup.rotation.y = -0.55;
+    // Initial orientation: balanced slight isometric view
+    rootGroup.rotation.x = 0.15;
+    rootGroup.rotation.y = -0.35;
 
     // Mouse / Touch Drag Rotation Interaction
     let isDragging = false;
     let previousMouseX = 0;
     let previousMouseY = 0;
-    let targetRotationX = 0.25;
-    let targetRotationY = -0.55;
+    let targetRotationX = 0.15;
+    let targetRotationY = -0.35;
 
     const handlePointerDown = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
@@ -326,11 +334,11 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
       const deltaX = clientX - previousMouseX;
       const deltaY = clientY - previousMouseY;
 
-      targetRotationY += deltaX * 0.008;
-      targetRotationX += deltaY * 0.008;
+      targetRotationY += deltaX * 0.007;
+      targetRotationX += deltaY * 0.007;
 
       // Clamp vertical tilt
-      targetRotationX = Math.max(-1.1, Math.min(1.1, targetRotationX));
+      targetRotationX = Math.max(-0.8, Math.min(0.8, targetRotationX));
 
       previousMouseX = clientX;
       previousMouseY = clientY;
@@ -348,16 +356,18 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     window.addEventListener('mouseup', handlePointerUp);
     window.addEventListener('touchend', handlePointerUp);
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!container) return;
-      const newW = container.clientWidth;
-      const newH = container.clientHeight;
-      camera.aspect = newW / newH;
-      camera.updateProjectionMatrix();
-      renderer.setSize(newW, newH);
-    };
-    window.addEventListener('resize', handleResize);
+    // Robust ResizeObserver for automatic centering & sizing
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
 
     // Animation Loop
     let animationFrameId: number;
@@ -373,12 +383,10 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
       animStateRef.current.currentSeparation += (targetSep - animStateRef.current.currentSeparation) * 0.08;
       const sep = animStateRef.current.currentSeparation;
 
-      // Update layers positions in exploded view
-      outerGroup.position.z = sep * 0.75;
-      outerGroup.position.y = sep * 0.2;
+      // Symmetrical layer separation along Z-axis (keeps center of gravity dead on 0,0,0)
+      outerGroup.position.z = sep * 0.8;
       rfidGroup.position.z = 0;
-      innerGroup.position.z = -sep * 0.75;
-      innerGroup.position.y = -sep * 0.2;
+      innerGroup.position.z = -sep * 0.8;
 
       // Color theme update
       outerMat.color.copy(getLeatherColor(animStateRef.current.colorTheme));
@@ -394,17 +402,17 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
         rfidMat.emissiveIntensity = 0.2;
       }
 
-      // Gentle floating animation & auto-rotate
+      // Auto-rotation around exact center
       if (isAutoRotate && !isDragging) {
-        targetRotationY += 0.005;
+        targetRotationY += 0.004;
       }
 
       // Smooth rotational damping
       rootGroup.rotation.y += (targetRotationY - rootGroup.rotation.y) * 0.08;
       rootGroup.rotation.x += (targetRotationX - rootGroup.rotation.x) * 0.08;
 
-      // Subtle float wave
-      rootGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.05;
+      // Gentle breathing float around Y=0
+      rootGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.04;
 
       renderer.render(scene, camera);
     };
@@ -413,7 +421,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       domElement.removeEventListener('mousedown', handlePointerDown);
       domElement.removeEventListener('touchstart', handlePointerDown);
       window.removeEventListener('mousemove', handlePointerMove);
@@ -445,21 +453,22 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[520px] md:h-[620px] rounded-3xl overflow-hidden glass-coffee border border-[#c88242]/20 flex flex-col justify-between p-4 md:p-6 group select-none">
-      {/* Top Controls & Status Bar */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 bg-[#0e0b0a]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#c88242]/25">
+    <div className="relative w-full h-[520px] md:h-[620px] rounded-3xl overflow-hidden glass-coffee border border-[#c88242]/20 flex flex-col justify-between p-4 md:p-6 group select-none shadow-2xl">
+      
+      {/* Top Controls & Status Bar (Never overlaps the 3D model) */}
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
+        <div className="flex items-center gap-2.5 bg-[#0e0b0a]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#c88242]/25 shrink-0">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-semibold tracking-wider text-[#eddccb] uppercase font-tech">
+          <span className="text-xs font-semibold tracking-wider text-[#eddccb] uppercase font-tech whitespace-nowrap">
             3D Studio View • {color.toUpperCase()}
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Exploded Mode Button */}
           <button
             onClick={handleToggleExploded}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all duration-300 ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               isExploded
                 ? 'bg-[#c88242] text-white shadow-lg shadow-[#c88242]/30'
                 : 'bg-[#1e1714] text-[#d6b074] hover:bg-[#281f1b] border border-[#c88242]/20'
@@ -473,7 +482,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
           {/* RFID Wave Simulator */}
           <button
             onClick={handleToggleRfidScan}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all duration-300 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               isRfidScanActive
                 ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30'
                 : 'bg-[#1e1714] text-[#eddccb] hover:bg-[#281f1b] border border-[#c88242]/20'
@@ -481,32 +490,33 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
             title="Mô phỏng trường chắn sóng RFID 13.56 MHz"
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Thử Khiên RFID</span>
+            <span>Thử Khiên RFID</span>
           </button>
 
           {/* Auto Rotate Toggle */}
           <button
             onClick={handleToggleAutoRotate}
-            className={`p-2 rounded-full text-xs transition-all duration-300 ${
+            className={`p-2 rounded-full text-xs transition-all duration-300 cursor-pointer ${
               isAutoRotate
                 ? 'bg-[#1e1714] text-[#c88242] border border-[#c88242]/30'
                 : 'bg-[#140e0c] text-zinc-500 border border-zinc-800'
             }`}
             title="Bật/Tắt xoay tự động"
+            aria-label="Xoay tự động"
           >
             <RotateCcw className={`w-3.5 h-3.5 ${isAutoRotate ? 'animate-spin' : ''}`} style={{ animationDuration: '8s' }} />
           </button>
         </div>
       </div>
 
-      {/* Main 3D WebGL Canvas Container */}
+      {/* Main 3D WebGL Canvas Container - DEAD CENTER */}
       <div
         ref={mountRef}
-        className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing flex items-center justify-center"
       />
 
-      {/* Interactive Exploded View Layer Legend (Visible when exploded) */}
-      <div className={`relative z-10 transition-all duration-500 ${isExploded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+      {/* Interactive Exploded View Layer Legend (Bottom overlay) */}
+      <div className={`relative z-10 transition-all duration-500 pointer-events-auto ${isExploded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 max-w-3xl mx-auto">
           {/* Layer 1 Badge */}
           <div
@@ -514,18 +524,18 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
             onMouseLeave={() => setActiveLayer(null)}
             className={`p-3 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
               activeLayer === 1
-                ? 'bg-[#c88242]/20 border-[#c88242] shadow-lg'
-                : 'bg-[#0f0c0b]/85 border-[#c88242]/20'
+                ? 'bg-[#c88242]/25 border-[#c88242] shadow-lg scale-102'
+                : 'bg-[#0f0c0b]/90 border-[#c88242]/20'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-5 h-5 rounded-full bg-[#c88242]/20 text-[#c88242] text-[10px] font-bold flex items-center justify-center border border-[#c88242]/40">
+              <span className="w-5 h-5 rounded-full bg-[#c88242]/20 text-[#c88242] text-[10px] font-bold flex items-center justify-center border border-[#c88242]/40 shrink-0 font-tech">
                 1
               </span>
-              <h4 className="text-xs font-semibold text-[#f5efeb]">Vỏ Bio-Composite</h4>
+              <h4 className="text-xs font-semibold text-[#f5efeb] whitespace-nowrap">Vỏ Bio-Composite</h4>
             </div>
             <p className="text-[11px] text-[#b5a89e] leading-snug">
-              Phụ phẩm cà phê Đắk Lắk (1.0-1.3mm), đàn hồi, kháng nước, thơm nhẹ.
+              Bã cà phê Đắk Lắk (1.0-1.3mm), mềm dẻo, kháng nước.
             </p>
           </div>
 
@@ -535,18 +545,18 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
             onMouseLeave={() => setActiveLayer(null)}
             className={`p-3 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
               activeLayer === 2
-                ? 'bg-[#c88242]/20 border-[#c88242] shadow-lg'
-                : 'bg-[#0f0c0b]/85 border-[#c88242]/20'
+                ? 'bg-[#c88242]/25 border-[#c88242] shadow-lg scale-102'
+                : 'bg-[#0f0c0b]/90 border-[#c88242]/20'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold flex items-center justify-center border border-amber-500/40">
+              <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold flex items-center justify-center border border-amber-500/40 shrink-0 font-tech">
                 2
               </span>
-              <h4 className="text-xs font-semibold text-[#f5efeb]">Lưới Chắn Sóng RFID</h4>
+              <h4 className="text-xs font-semibold text-[#f5efeb] whitespace-nowrap">Lưới Chắn Sóng RFID</h4>
             </div>
             <p className="text-[11px] text-[#b5a89e] leading-snug">
-              Vải dẫn điện phủ Niken & Đồng (0.08mm) triệt tiêu sóng 13.56 MHz từ máy POS.
+              Vải dẫn điện phủ Niken & Đồng triệt tiêu sóng 13.56 MHz.
             </p>
           </div>
 
@@ -556,30 +566,30 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
             onMouseLeave={() => setActiveLayer(null)}
             className={`p-3 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
               activeLayer === 3
-                ? 'bg-[#c88242]/20 border-[#c88242] shadow-lg'
-                : 'bg-[#0f0c0b]/85 border-[#c88242]/20'
+                ? 'bg-[#c88242]/25 border-[#c88242] shadow-lg scale-102'
+                : 'bg-[#0f0c0b]/90 border-[#c88242]/20'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold flex items-center justify-center border border-emerald-500/40">
+              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold flex items-center justify-center border border-emerald-500/40 shrink-0 font-tech">
                 3
               </span>
-              <h4 className="text-xs font-semibold text-[#f5efeb]">Khoang Kép Smart Tag</h4>
+              <h4 className="text-xs font-semibold text-[#f5efeb] whitespace-nowrap">Khoang Kép Smart Tag</h4>
             </div>
             <p className="text-[11px] text-[#b5a89e] leading-snug">
-              Dual-Zone độc lập bên ngoài khiên RFID, bắt sóng Bluetooth 2.4 GHz Apple Find My.
+              Dual-Zone độc lập bên ngoài khiên, bắt sóng Bluetooth 2.4 GHz.
             </p>
           </div>
         </div>
       </div>
 
       {/* Bottom Hint */}
-      <div className="relative z-10 flex items-center justify-between text-[11px] text-[#b5a89e]/80">
-        <div className="flex items-center gap-1.5">
+      <div className="relative z-10 flex items-center justify-between text-[11px] text-[#b5a89e]/80 pointer-events-none">
+        <div className="flex items-center gap-1.5 whitespace-nowrap">
           <RotateCcw className="w-3 h-3 text-[#c88242]" />
           <span>Giữ & kéo chuột / vuốt để xoay ví 360°</span>
         </div>
-        <div className="font-tech text-[#c88242]">
+        <div className="font-tech text-[#c88242] whitespace-nowrap">
           Dual-Zone Architecture™
         </div>
       </div>

@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { CheckCircle2, ArrowRight, Tag, Gift, Phone, Mail, User, MapPin } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sound } from '../utils/audio';
 import type { SelectedProduct } from './ProductConfigurator';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface PreOrderSectionProps {
   selectedProduct?: SelectedProduct | null;
 }
 
 export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduct }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const formCardRef = useRef<HTMLDivElement>(null);
+
   // Form State
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -26,6 +33,36 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
       : 'bifold-smart'
   );
 
+  // Update chosen version if parent selectedProduct changes
+  useEffect(() => {
+    if (selectedProduct) {
+      setChosenVersion(`${selectedProduct.style}-${selectedProduct.edition}`);
+    }
+  }, [selectedProduct]);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      if (formCardRef.current) {
+        gsap.from(formCardRef.current, {
+          scrollTrigger: {
+            trigger: formCardRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: 'power2.out',
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   // Order submission modal state
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [generatedOrderId, setGeneratedOrderId] = useState('');
@@ -42,13 +79,13 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
       price: 279000,
     },
     'minizip-smart': {
-      label: 'Ví Nữ Mini Zip - Bản Smart kèm Tag (Bán chạy nhất)',
+      label: 'Ví Nữ Mini Zip - Bản Smart kèm Tag (Bán chạy)',
       price: 499000,
       originalPrice: 549000,
       discountNote: 'Tiết kiệm 50.000đ',
     },
     'bifold-smart': {
-      label: 'Ví Nam Bifold - Bản Smart kèm Tag (Toàn diện nhất)',
+      label: 'Ví Nam Bifold - Bản Smart kèm Tag (Toàn diện)',
       price: 529000,
       originalPrice: 579000,
       discountNote: 'Tiết kiệm 50.000đ',
@@ -114,7 +151,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
   };
 
   return (
-    <section id="pre-order-form" className="py-20 md:py-28 relative scroll-mt-20">
+    <section ref={sectionRef} id="pre-order-form" className="py-20 md:py-28 relative scroll-mt-20">
       {/* Background ambient accents */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[600px] bg-gradient-to-br from-[#c88242]/10 to-emerald-500/05 rounded-full blur-[150px] pointer-events-none" />
 
@@ -122,41 +159,44 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4">
-            <Gift className="w-3.5 h-3.5" />
-            Lô Pilot Đợt 1 Giới Hạn 200 Chiếc
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#c88242]/10 border border-[#c88242]/30 text-[#df9854] text-xs font-semibold tracking-wider uppercase font-tech mb-4 whitespace-nowrap">
+            <Gift className="w-3.5 h-3.5 shrink-0" />
+            <span>Lô Pilot Đợt 1 Giới Hạn 200 Chiếc</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5">
-            Sở Hữu <span className="shimmer-text">EcoShield Wallet</span> – Bảo Vệ Tài Sản, Định Hình Lối Sống Xanh
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+            Sở Hữu <span className="shimmer-text whitespace-nowrap">EcoShield Wallet</span> – Bảo Vệ Tài Sản, Sống Xanh
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
             Số lượng sản xuất đợt đầu (Pilot Batch) có giới hạn nhằm đảm bảo kiểm soát chất lượng 100% trên từng đường kim mũi chỉ. Đăng ký đặt trước ngay hôm nay để nhận mức giá ưu đãi đặc biệt!
           </p>
 
           {/* Remaining spots progress indicator */}
           <div className="mt-6 max-w-md mx-auto p-3.5 rounded-2xl bg-[#140f0d] border border-[#c88242]/25">
-            <div className="flex items-center justify-between text-xs font-tech mb-1.5">
-              <span className="text-[#b5a89e]">Số lượng đặt trước:</span>
-              <span className="text-[#df9854] font-bold">162 / 200 chiếc đã đăng ký</span>
+            <div className="flex items-center justify-between text-xs font-tech mb-1.5 gap-2">
+              <span className="text-[#b5a89e] whitespace-nowrap">Số lượng đặt trước:</span>
+              <span className="text-[#df9854] font-bold whitespace-nowrap">162 / 200 chiếc đã đăng ký</span>
             </div>
             <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
               <div className="h-full bg-gradient-to-r from-[#c88242] to-emerald-400 rounded-full w-[81%]" />
             </div>
-            <span className="text-[11px] text-emerald-400 font-tech mt-1.5 block text-center">
+            <span className="text-[11px] text-emerald-400 font-tech mt-1.5 block text-center whitespace-nowrap">
               🔥 Chỉ còn 38 suất ưu đãi giá đặt trước hôm nay!
             </span>
           </div>
         </div>
 
         {/* Form Container Card */}
-        <div className="glass-coffee rounded-3xl p-6 sm:p-10 lg:p-12 border-2 border-[#c88242]/30 shadow-2xl relative">
+        <div
+          ref={formCardRef}
+          className="glass-coffee rounded-3xl p-6 sm:p-10 lg:p-12 border-2 border-[#c88242]/30 shadow-2xl relative"
+        >
           <form onSubmit={handleSubmitPreOrder} className="space-y-8">
             
             {/* 1. Lựa chọn phiên bản */}
             <div>
               <label className="text-sm font-bold text-[#f5efeb] flex items-center gap-2 mb-4">
-                <Tag className="w-4 h-4 text-[#c88242]" />
-                <span>1. Lựa chọn phiên bản EcoShield Wallet của bạn:</span>
+                <Tag className="w-4 h-4 text-[#c88242] shrink-0" />
+                <span className="whitespace-nowrap">1. Lựa chọn phiên bản EcoShield Wallet của bạn:</span>
               </label>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -178,21 +218,21 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
                         value={key}
                         checked={isChecked}
                         onChange={() => setChosenVersion(key)}
-                        className="mt-1 accent-[#c88242] w-4 h-4 cursor-pointer"
+                        className="mt-1 accent-[#c88242] w-4 h-4 cursor-pointer shrink-0"
                       />
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="text-sm font-bold text-[#f5efeb] leading-snug">
                           {item.label}
                         </div>
                         {item.discountNote && (
-                          <span className="inline-block text-[10px] font-tech text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-900/40 mt-1">
+                          <span className="inline-block text-[10px] font-tech text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-900/40 mt-1 whitespace-nowrap">
                             {item.discountNote}
                           </span>
                         )}
-                        <div className="text-xs font-tech text-[#c88242] font-bold mt-2">
+                        <div className="text-xs font-tech text-[#c88242] font-bold mt-2 whitespace-nowrap">
                           Giá: {formatVND(item.price)}
                           {item.originalPrice && (
-                            <span className="text-zinc-500 line-through ml-2 font-normal">
+                            <span className="text-zinc-500 line-through ml-2 font-normal whitespace-nowrap">
                               {formatVND(item.originalPrice)}
                             </span>
                           )}
@@ -207,14 +247,14 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
             {/* 2. Thông tin cá nhân người nhận */}
             <div>
               <label className="text-sm font-bold text-[#f5efeb] flex items-center gap-2 mb-4">
-                <User className="w-4 h-4 text-[#c88242]" />
-                <span>2. Thông tin nhận thông báo & giao hàng:</span>
+                <User className="w-4 h-4 text-[#c88242] shrink-0" />
+                <span className="whitespace-nowrap">2. Thông tin nhận thông báo & giao hàng:</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Họ tên */}
                 <div>
-                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5">
+                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5 whitespace-nowrap">
                     Họ và tên của bạn *
                   </label>
                   <div className="relative">
@@ -232,7 +272,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
 
                 {/* Số điện thoại / Zalo */}
                 <div>
-                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5">
+                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5 whitespace-nowrap">
                     Số điện thoại (Zalo) nhận ưu đãi *
                   </label>
                   <div className="relative">
@@ -250,7 +290,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
 
                 {/* Email */}
                 <div>
-                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5">
+                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5 whitespace-nowrap">
                     Email nhận thông tin xác nhận
                   </label>
                   <div className="relative">
@@ -267,14 +307,14 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
 
                 {/* Địa chỉ giao hàng */}
                 <div>
-                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5">
+                  <label className="text-xs font-medium text-[#b5a89e] block mb-1.5 whitespace-nowrap">
                     Địa chỉ nhận hàng (Tùy chọn ghi sau)
                   </label>
                   <div className="relative">
                     <MapPin className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
-                      placeholder="Số nhà, đường, phường/xã, tỉnh/thành"
+                      placeholder="Số nhà, đường, tỉnh/thành"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full bg-[#140f0d] border border-zinc-800 focus:border-[#c88242] rounded-xl py-3 pl-10 pr-4 text-sm text-[#f5efeb] placeholder-zinc-600 focus:outline-none transition-colors"
@@ -285,7 +325,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
 
               {/* Ghi chú */}
               <div className="mt-4">
-                <label className="text-xs font-medium text-[#b5a89e] block mb-1.5">
+                <label className="text-xs font-medium text-[#b5a89e] block mb-1.5 whitespace-nowrap">
                   Ghi chú riêng (Màu sắc ưu tiên / Khắc tên laze)
                 </label>
                 <textarea
@@ -311,7 +351,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-[#eddccb] text-xs font-bold transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-[#eddccb] text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                 >
                   Áp Dụng
                 </button>
@@ -326,29 +366,29 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
             {/* 4. Tổng kết giá & Nút Submit */}
             <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-6">
               <div>
-                <span className="text-xs text-[#b5a89e] block">Tổng tiền tạm tính (Thanh toán khi nhận hàng):</span>
+                <span className="text-xs text-[#b5a89e] block whitespace-nowrap">Tổng tiền tạm tính (Thanh toán khi nhận hàng):</span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-3xl font-extrabold text-[#c88242] font-tech">
+                  <span className="text-3xl font-extrabold text-[#c88242] font-tech whitespace-nowrap">
                     {formatVND(finalPrice)}
                   </span>
                   {discountAmount > 0 && (
-                    <span className="text-xs text-emerald-400 font-tech">
+                    <span className="text-xs text-emerald-400 font-tech whitespace-nowrap">
                       (-{formatVND(discountAmount)})
                     </span>
                   )}
                 </div>
                 <span className="text-[11px] text-zinc-500 font-tech">
-                  *Không cần thanh toán trước 100%. Nhận hàng kiểm tra rồi mới trả tiền.
+                  *Không cần chuyển khoản trước 100%. Nhận hàng kiểm tra rồi mới trả tiền.
                 </span>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto py-4 px-10 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98"
+                className="w-full sm:w-auto py-4 px-10 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98 whitespace-nowrap"
               >
-                <span>{isSubmitting ? 'Đang Xử Lý...' : 'HOÀN TẤT ĐẶT TRƯỚC - GIỮ ƯU ĐÃI NGAY'}</span>
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <span className="whitespace-nowrap">{isSubmitting ? 'Đang Xử Lý...' : 'HOÀN TẤT ĐẶT TRƯỚC - GIỮ ƯU ĐÃI NGAY'}</span>
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1 shrink-0" />
               </button>
             </div>
 
@@ -370,34 +410,34 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
             <h3 className="text-2xl font-bold font-serif-title text-[#f5efeb] mb-2">
               Đặt Trước Thành Công!
             </h3>
-            <p className="text-xs sm:text-sm text-[#b5a89e] mb-6">
+            <p className="text-xs sm:text-sm text-[#b5a89e] mb-6 text-pretty">
               Cảm ơn <strong className="text-[#f5efeb]">{fullName}</strong> đã đồng hành cùng thời trang cà phê bền vững EcoShield.
             </p>
 
             {/* Order Slip Details */}
             <div className="p-4 rounded-2xl bg-[#140f0d] border border-zinc-800 text-left text-xs space-y-2 mb-6 font-tech">
               <div className="flex justify-between border-b border-zinc-800 pb-2">
-                <span className="text-zinc-500">Mã đơn đặt trước:</span>
-                <span className="text-[#c88242] font-bold">{generatedOrderId}</span>
+                <span className="text-zinc-500 whitespace-nowrap">Mã đơn đặt trước:</span>
+                <span className="text-[#c88242] font-bold whitespace-nowrap">{generatedOrderId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">Sản phẩm:</span>
+                <span className="text-zinc-500 whitespace-nowrap">Sản phẩm:</span>
                 <span className="text-[#f5efeb] font-medium">{currentSelection.label}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">Số điện thoại:</span>
-                <span className="text-[#f5efeb]">{phone}</span>
+                <span className="text-zinc-500 whitespace-nowrap">Số điện thoại:</span>
+                <span className="text-[#f5efeb] whitespace-nowrap">{phone}</span>
               </div>
               <div className="flex justify-between border-t border-zinc-800 pt-2 font-bold text-sm">
-                <span className="text-zinc-400">Số tiền thanh toán:</span>
-                <span className="text-emerald-400">{formatVND(finalPrice)}</span>
+                <span className="text-zinc-400 whitespace-nowrap">Số tiền thanh toán:</span>
+                <span className="text-emerald-400 whitespace-nowrap">{formatVND(finalPrice)}</span>
               </div>
             </div>
 
             {/* Action buttons */}
             <button
               onClick={() => setIsSuccessModalOpen(false)}
-              className="w-full py-3.5 px-6 rounded-xl bg-[#c88242] hover:bg-[#df9854] text-white font-bold text-sm transition-colors cursor-pointer"
+              className="w-full py-3.5 px-6 rounded-xl bg-[#c88242] hover:bg-[#df9854] text-white font-bold text-sm transition-colors cursor-pointer whitespace-nowrap"
             >
               Đã Hiểu & Đóng Cửa Sổ
             </button>

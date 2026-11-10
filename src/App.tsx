@@ -13,6 +13,7 @@ import { QualitySupplyChain } from './components/QualitySupplyChain';
 import { FaqSection } from './components/FaqSection';
 import { PreOrderSection } from './components/PreOrderSection';
 import { Footer } from './components/Footer';
+import { AmbientParticles } from './components/AmbientParticles';
 import { ShoppingBag, ChevronUp } from 'lucide-react';
 import { sound } from './utils/audio';
 
@@ -85,11 +86,14 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#0c0908] text-[#f5efeb] relative selection:bg-[#c88242] selection:text-white">
+      {/* Floating Organic Coffee & Amber Ambient Dust Particles */}
+      <AmbientParticles />
+
       {/* Top Navbar */}
       <Navbar onPreOrderClick={scrollToPreOrder} />
 
       {/* Main Content Sections */}
-      <main>
+      <main className="relative z-10">
         {/* 1. Hero Section */}
         <Hero
           onPreOrderClick={scrollToPreOrder}
@@ -135,16 +139,16 @@ export function App() {
         >
           <div className="glass-coffee rounded-2xl p-2.5 sm:px-5 sm:py-3 border border-[#c88242]/40 shadow-2xl flex items-center justify-between sm:gap-4">
             <div className="hidden sm:block">
-              <span className="text-xs font-bold text-[#f5efeb] block leading-tight">EcoShield Wallet</span>
-              <span className="text-[10px] text-amber-400 font-tech">Đặt trước chỉ từ 249.000đ</span>
+              <span className="text-xs font-bold text-[#f5efeb] block leading-tight whitespace-nowrap">EcoShield Wallet</span>
+              <span className="text-[10px] text-amber-400 font-tech whitespace-nowrap">Đặt trước chỉ từ 249.000đ</span>
             </div>
 
             <button
               onClick={scrollToPreOrder}
-              className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
             >
-              <ShoppingBag className="w-4 h-4" />
-              <span>ĐẶT TRƯỚC NGAY</span>
+              <ShoppingBag className="w-4 h-4 shrink-0" />
+              <span className="whitespace-nowrap">ĐẶT TRƯỚC NGAY</span>
             </button>
           </div>
         </aside>
