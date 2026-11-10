@@ -163,10 +163,10 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
             <Gift className="w-3.5 h-3.5 shrink-0" />
             <span>Lô Pilot Đợt 1 Giới Hạn 200 Chiếc</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Sở Hữu <span className="shimmer-text whitespace-nowrap">EcoShield Wallet</span> – Bảo Vệ Tài Sản, Sống Xanh
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Số lượng sản xuất đợt đầu (Pilot Batch) có giới hạn nhằm đảm bảo kiểm soát chất lượng 100% trên từng đường kim mũi chỉ. Đăng ký đặt trước ngay hôm nay để nhận mức giá ưu đãi đặc biệt!
           </p>
 
@@ -385,7 +385,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto py-4 px-10 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98 whitespace-nowrap"
+                className="btn-shimmer-wrap w-full sm:w-auto py-4 px-10 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98 whitespace-nowrap"
               >
                 <span className="whitespace-nowrap">{isSubmitting ? 'Đang Xử Lý...' : 'HOÀN TẤT ĐẶT TRƯỚC - GIỮ ƯU ĐÃI NGAY'}</span>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1 shrink-0" />
@@ -407,7 +407,7 @@ export const PreOrderSection: React.FC<PreOrderSectionProps> = ({ selectedProduc
               <CheckCircle2 className="w-8 h-8 text-emerald-400" />
             </div>
 
-            <h3 className="text-2xl font-bold font-serif-title text-[#f5efeb] mb-2">
+            <h3 className="text-2xl font-bold font-heading text-[#f5efeb] mb-2 tracking-tight">
               Đặt Trước Thành Công!
             </h3>
             <p className="text-xs sm:text-sm text-[#b5a89e] mb-6 text-pretty">

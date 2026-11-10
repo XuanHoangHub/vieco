@@ -73,10 +73,10 @@ export const FaqSection: React.FC = () => {
             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
             <span>Giải Đáp Thắc Mắc & Hỗ Trợ</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Câu Hỏi Thường Gặp Về <span className="shimmer-text whitespace-nowrap">EcoShield Wallet</span>
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Mọi thắc mắc về vật liệu bio-composite, cơ chế chắn sóng RFID và tính năng định vị Apple Find My được giải đáp minh bạch dưới đây.
           </p>
         </div>

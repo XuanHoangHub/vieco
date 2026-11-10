@@ -110,10 +110,10 @@ export const SolutionPillars: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
             <span>Giải Pháp Đột Phá</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             EcoShield Wallet – <span className="shimmer-text whitespace-nowrap">Định Nghĩa Lại</span> Chiếc Ví Thế Hệ Mới
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Không chạy theo những lời quảng cáo hoa mỹ, EcoShield tập trung vào giải pháp kỹ thuật thực tế, minh bạch nguồn gốc và tối ưu hóa trải nghiệm sử dụng hàng ngày.
           </p>
         </div>
@@ -153,7 +153,7 @@ export const SolutionPillars: React.FC = () => {
                   {pillars[activePillar].badge}: {pillars[activePillar].subtitle}
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-bold font-serif-title text-[#f5efeb] mb-6 leading-tight text-balance">
+                <h3 className="text-2xl sm:text-3xl font-bold font-heading text-[#f5efeb] mb-6 leading-tight text-balance">
                   {pillars[activePillar].title}
                 </h3>
 

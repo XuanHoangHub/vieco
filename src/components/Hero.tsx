@@ -101,7 +101,7 @@ export const Hero: React.FC<HeroProps> = ({ onPreOrderClick, onExploreTechClick 
         <div className="text-center max-w-4xl mx-auto mb-10">
           <h1
             ref={titleRef}
-            className="text-3xl sm:text-5xl md:text-6xl lg:text-[62px] font-serif-title font-bold text-[#f5efeb] tracking-tight leading-[1.18] mb-6 text-balance"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-[62px] font-heading font-extrabold text-[#f5efeb] tracking-tight leading-[1.18] mb-6 text-balance"
           >
             EcoShield Wallet: Khi Phụ Phẩm Cà Phê Việt Hóa Thành{' '}
             <span className="shimmer-text whitespace-nowrap">"Khiên Chắn"</span> Bảo Vệ Tài Sản Của Bạn
@@ -109,7 +109,7 @@ export const Hero: React.FC<HeroProps> = ({ onPreOrderClick, onExploreTechClick 
 
           <p
             ref={subtitleRef}
-            className="text-base sm:text-lg md:text-xl text-[#b5a89e] leading-relaxed max-w-3xl mx-auto text-pretty"
+            className="text-base sm:text-lg md:text-xl text-[#b5a89e] leading-relaxed max-w-3xl mx-auto text-pretty font-body"
           >
             Chiếc ví thời trang tiên phong kết hợp <strong className="text-[#f5efeb] font-semibold">3 giá trị cốt lõi</strong>: Vật liệu composite chứa phụ phẩm cà phê thân thiện môi trường – Lớp lót chắn sóng RFID bảo mật thẻ ngân hàng – Khoang định vị thông minh giúp bạn không bao giờ thất lạc ví.
           </p>
@@ -130,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({ onPreOrderClick, onExploreTechClick 
               sound.playClick();
               onPreOrderClick();
             }}
-            className="w-full sm:w-auto py-4 px-8 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98 whitespace-nowrap"
+            className="btn-shimmer-wrap w-full sm:w-auto py-4 px-8 rounded-2xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white font-bold text-base tracking-wide transition-all shadow-xl shadow-[#c88242]/30 flex items-center justify-center gap-2 group cursor-pointer active:scale-98 whitespace-nowrap"
           >
             <span className="whitespace-nowrap">ĐẶT TRƯỚC NGAY - ƯU ĐÃI TỪ 249.000Đ</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1 shrink-0" />

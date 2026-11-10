@@ -107,17 +107,17 @@ export const QualitySupplyChain: React.FC = () => {
             <Award className="w-3.5 h-3.5 shrink-0" />
             <span>Minh Bạch Nguồn Gốc & Quy Trình</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Tự Hào <span className="shimmer-text whitespace-nowrap">Chuỗi Giá Trị Nội Địa</span> & Kiểm Soát Chất Lượng 3 Cấp Độ
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             EcoShield Wallet không phải là sản phẩm thương mại mua đi bán lại. Mỗi chiếc ví đến tay bạn là kết tinh của sự hợp tác chặt chẽ cùng các đối tác kỹ thuật uy tín tại Việt Nam.
           </p>
         </div>
 
         {/* Domestic Supply Chain Steps */}
         <div className="mb-20">
-          <h3 className="text-lg font-bold text-[#f5efeb] mb-8 text-center font-serif-title whitespace-nowrap">
+          <h3 className="text-lg font-bold text-[#f5efeb] mb-8 text-center font-heading tracking-tight whitespace-nowrap">
             Hành Trình Phụ Phẩm Cà Phê Việt Hóa Thành Chiếc Ví Bảo Mật
           </h3>
           <div ref={stepsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 relative">
@@ -159,7 +159,7 @@ export const QualitySupplyChain: React.FC = () => {
         {/* 3-Tier QC Inspection (Kiểm nghiệm 3 Cấp Độ) */}
         <div className="glass-coffee rounded-3xl p-6 sm:p-10 lg:p-12 border border-[#c88242]/20 shadow-2xl">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h3 className="text-2xl font-bold font-serif-title text-[#f5efeb] mb-3 text-balance">
+            <h3 className="text-2xl font-bold font-heading text-[#f5efeb] mb-3 text-balance tracking-tight">
               Quy Trình Kiểm Nghiệm Thực Tế 100% Lô Pilot
             </h3>
             <p className="text-xs sm:text-sm text-[#b5a89e] text-pretty">

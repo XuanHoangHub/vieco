@@ -15,17 +15,22 @@
 
   html {
     scroll-behavior: smooth;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     background-color: #0c0908;
     color: #f5efeb;
+    font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
     background-image: 
-      radial-gradient(circle at 15% 10%, rgba(200, 130, 66, 0.07) 0%, transparent 45%),
-      radial-gradient(circle at 85% 60%, rgba(61, 110, 83, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 50% 90%, rgba(200, 130, 66, 0.05) 0%, transparent 40%);
+      radial-gradient(circle at 15% 10%, rgba(200, 130, 66, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 85% 60%, rgba(61, 110, 83, 0.07) 0%, transparent 50%),
+      radial-gradient(circle at 50% 90%, rgba(200, 130, 66, 0.06) 0%, transparent 40%);
     background-attachment: fixed;
+    overflow-x: hidden;
   }
 
   /* Custom subtle coffee-grain noise overlay */
@@ -37,9 +42,9 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    opacity: 0.025;
+    opacity: 0.022;
     z-index: 9999;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 
   /* Custom luxury scrollbar */
@@ -59,16 +64,26 @@
   }
 }
 
+/* Modern Sans-Serif Typography - Absolutely NO SERIF */
+.font-heading,
 .font-serif-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Outfit', 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, sans-serif !important;
+  letter-spacing: -0.025em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.font-body {
+  font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 .font-display {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  letter-spacing: -0.03em;
 }
 
 .font-tech {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Glassmorphism card */
@@ -86,12 +101,12 @@
 .glass-coffee-hover:hover {
   transform: translateY(-3px);
   border-color: rgba(200, 130, 66, 0.38);
-  box-shadow: 0 24px 50px -12px rgba(200, 130, 66, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 50px -12px rgba(200, 130, 66, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Ambient glow */
+/* Ambient glow & shimmer */
 .amber-glow {
-  text-shadow: 0 0 24px rgba(200, 130, 66, 0.4);
+  text-shadow: 0 0 24px rgba(200, 130, 66, 0.45);
 }
 
 .shield-pulse {
@@ -127,7 +142,7 @@
   animation: radar-sweep 4s linear infinite;
 }
 
-/* Shimmer highlight for hero badge */
+/* Shimmer highlight for hero badge and accent text */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -138,10 +153,77 @@
 }
 
 .shimmer-text {
-  background: linear-gradient(90deg, #f5efeb 0%, #c88242 50%, #f5efeb 100%);
+  background: linear-gradient(90deg, #f5efeb 0%, #c88242 45%, #ffd49e 55%, #f5efeb 100%);
   background-size: 200% auto;
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: shimmer 4s linear infinite;
+  animation: shimmer 4.5s linear infinite;
+}
+
+/* Button Luxury Shimmer Sweep Effect */
+.btn-shimmer-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer-wrap::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: rotate(25deg);
+  animation: btn-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes btn-sweep {
+  0%, 70% {
+    left: -60%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* Sound Wave Equalizer animation for Navbar */
+@keyframes eq-bar {
+  0%, 100% {
+    height: 3px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+
+.animate-eq-1 {
+  animation: eq-bar 1s ease-in-out infinite;
+}
+.animate-eq-2 {
+  animation: eq-bar 0.8s ease-in-out 0.2s infinite;
+}
+.animate-eq-3 {
+  animation: eq-bar 1.2s ease-in-out 0.4s infinite;
+}
+
+/* Float Animation */
+@keyframes soft-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: soft-float 5s ease-in-out infinite;
 }

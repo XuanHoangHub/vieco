@@ -19,7 +19,7 @@ export const Footer: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#c88242] to-[#8c5225] flex items-center justify-center border border-[#df9854]/40">
                 <Shield className="w-4 h-4 text-white" />
               </div>
-              <span className="text-xl font-bold font-serif-title tracking-tight text-[#f5efeb]">
+              <span className="text-xl font-bold font-heading tracking-tight text-[#f5efeb]">
                 EcoShield <span className="text-[#c88242] text-xs font-tech font-normal">Wallet</span>
               </span>
             </div>

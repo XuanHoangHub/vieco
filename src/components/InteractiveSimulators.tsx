@@ -79,10 +79,10 @@ export const InteractiveSimulators: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
             <span>Trải Nghiệm Trực Quan Độc Quyền</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Mô Phỏng Trực Tiếp <span className="shimmer-text whitespace-nowrap">Công Nghệ Bảo Mật</span>
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Tận mắt kiểm chứng cơ chế chắn sóng RFID 13.56 MHz ngăn chặn móc túi điện tử và hệ thống định vị Apple Find My phản hồi tức thì.
           </p>
         </div>

@@ -145,7 +145,7 @@ export function App() {
 
             <button
               onClick={scrollToPreOrder}
-              className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
+              className="btn-shimmer-wrap w-full sm:w-auto py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#c88242] to-[#b2692c] hover:from-[#df9854] hover:to-[#c88242] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-lg shadow-[#c88242]/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
               <span className="whitespace-nowrap">ĐẶT TRƯỚC NGAY</span>

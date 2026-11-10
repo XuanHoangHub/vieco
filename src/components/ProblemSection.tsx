@@ -82,10 +82,10 @@ export const ProblemSection: React.FC = () => {
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <span>Rủi Ro Thường Trực Hàng Ngày</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Chiếc Ví Của Bạn Có Đang Thực Sự <span className="text-red-400 whitespace-nowrap">"An Toàn"</span>?
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Giữa nhịp sống số hóa hối hả, chiếc ví da truyền thống đang dần bộc lộ những điểm yếu chí mạng khiến bạn luôn phải sống trong cảm giác bất an.
           </p>
         </div>
@@ -130,7 +130,7 @@ export const ProblemSection: React.FC = () => {
         {/* Visual Confrontation Table: Traditional Wallet vs EcoShield */}
         <div ref={compareRef} className="glass-coffee rounded-3xl p-6 sm:p-10 border border-[#c88242]/20 shadow-xl">
           <div className="text-center mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold text-[#f5efeb] mb-2 font-serif-title">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#f5efeb] mb-2 font-heading tracking-tight">
               Sự Khác Biệt Giữa Ví Truyền Thống & EcoShield Wallet
             </h3>
             <p className="text-xs sm:text-sm text-[#b5a89e]">

@@ -120,10 +120,10 @@ export const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSele
             <Tag className="w-3.5 h-3.5 shrink-0" />
             <span>Bộ Sưu Tập & Bảng Giá Ưu Đãi</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-title font-bold text-[#f5efeb] tracking-tight mb-5 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-[#f5efeb] tracking-tight mb-5 text-balance">
             Lựa Chọn <span className="shimmer-text whitespace-nowrap">Phiên Bản EcoShield</span> Của Bạn
           </h2>
-          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty">
+          <p className="text-base sm:text-lg text-[#b5a89e] leading-relaxed text-pretty font-body">
             Thiết kế 2 kiểu dáng thời trang cùng 2 cấp độ trang bị công nghệ để bạn dễ dàng lựa chọn theo đúng phong cách và nhu cầu.
           </p>
         </div>

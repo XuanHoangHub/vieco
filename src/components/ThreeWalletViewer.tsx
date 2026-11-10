@@ -52,19 +52,36 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
     const initialWidth = container.clientWidth || 800;
     const initialHeight = container.clientHeight || 560;
 
+    // Function to calculate optimal camera distance based on viewport aspect ratio
+    const getOptimalCameraDistance = (w: number, h: number) => {
+      const aspect = w / h;
+      if (aspect < 0.8) return 5.8;  // Mobile portrait
+      if (aspect < 1.1) return 5.0;  // Tablet portrait / square
+      return 4.2;                     // Desktop landscape
+    };
+
     // Set camera FOV and position to look directly at center (0, 0, 0)
     const camera = new THREE.PerspectiveCamera(40, initialWidth / initialHeight, 0.1, 100);
-    // Camera is positioned directly in front with a tiny elevation, looking straight at (0, 0, 0)
-    camera.position.set(0, 0.05, 4.3);
+    camera.position.set(0, 0, getOptimalCameraDistance(initialWidth, initialHeight));
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    renderer.setSize(initialWidth, initialHeight);
+    renderer.setSize(initialWidth, initialHeight, false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
+    
+    // Ensure canvas stays perfectly centered and spans container exactly
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.outline = 'none';
+    
     container.appendChild(renderer.domElement);
 
     // Group holding all wallet parts - CENTERED AT (0, 0, 0)
@@ -362,8 +379,10 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
         const { width, height } = entry.contentRect;
         if (width > 0 && height > 0) {
           camera.aspect = width / height;
+          camera.position.z = getOptimalCameraDistance(width, height);
+          camera.lookAt(0, 0, 0);
           camera.updateProjectionMatrix();
-          renderer.setSize(width, height);
+          renderer.setSize(width, height, false);
         }
       }
     });
@@ -371,7 +390,7 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
 
     // Animation Loop
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -384,9 +403,9 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
       const sep = animStateRef.current.currentSeparation;
 
       // Symmetrical layer separation along Z-axis (keeps center of gravity dead on 0,0,0)
-      outerGroup.position.z = sep * 0.8;
+      outerGroup.position.z = sep * 0.85;
       rfidGroup.position.z = 0;
-      innerGroup.position.z = -sep * 0.8;
+      innerGroup.position.z = -sep * 0.85;
 
       // Color theme update
       outerMat.color.copy(getLeatherColor(animStateRef.current.colorTheme));
@@ -412,7 +431,10 @@ export const ThreeWalletViewer: React.FC<ThreeWalletViewerProps> = ({
       rootGroup.rotation.x += (targetRotationX - rootGroup.rotation.x) * 0.08;
 
       // Gentle breathing float around Y=0
-      rootGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.04;
+      rootGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.03;
+
+      // Keep camera locked dead center on (0, 0, 0)
+      camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
     };
