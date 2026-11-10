@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-coffee-dark: #0e0b0a;
+    --color-coffee-surface: #171210;
+    --color-coffee-elevated: #211a17;
+    --color-coffee-card: #1c1513;
+    --color-coffee-border: rgba(200, 130, 66, 0.16);
+    --color-coffee-amber: #c88242;
+    --color-coffee-amber-hover: #df9854;
+    --color-coffee-crema: #eddccb;
+    --color-coffee-emerald: #3d6e53;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: #0c0908;
+    color: #f5efeb;
+    background-image: 
+      radial-gradient(circle at 15% 10%, rgba(200, 130, 66, 0.07) 0%, transparent 45%),
+      radial-gradient(circle at 85% 60%, rgba(61, 110, 83, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 90%, rgba(200, 130, 66, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+
+  /* Custom subtle coffee-grain noise overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.025;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* Custom luxury scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0e0b0a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2b211d;
+    border-radius: 4px;
+    border: 2px solid #0e0b0a;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #c88242;
+  }
+}
+
+.font-serif-title {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-tech {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glassmorphism card */
+.glass-coffee {
+  background: rgba(28, 21, 19, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(200, 130, 66, 0.16);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-coffee-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-coffee-hover:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200, 130, 66, 0.38);
+  box-shadow: 0 24px 50px -12px rgba(200, 130, 66, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Ambient glow */
+.amber-glow {
+  text-shadow: 0 0 24px rgba(200, 130, 66, 0.4);
+}
+
+.shield-pulse {
+  animation: pulse-ring 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(200, 130, 66, 0.6);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 18px rgba(200, 130, 66, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(200, 130, 66, 0);
+  }
+}
+
+/* Radar ping wave */
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar {
+  animation: radar-sweep 4s linear infinite;
+}
+
+/* Shimmer highlight for hero badge */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #f5efeb 0%, #c88242 50%, #f5efeb 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
